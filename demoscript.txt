@@ -1,0 +1,44 @@
+Demo Notes:
+
+cd /Users/jford/projects/kafka_2.12-2.0.0
+
+##Standalone
+ls -l /tmp/kafka-logs/standalone
+bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
+ls -l /tmp/kafka-logs/standalone
+
+##there should be a new directory for the topic once records are produced
+##once a topic consumes records, there will be many consumer files
+
+
+##Multi
+bin/zookeeper-server-start.sh config/zookeeper-multi.properties
+bin/kafka-server-start.sh config/server-b1.properties
+bin/kafka-server-start.sh config/server-b2.properties
+
+
+##Topic Management - Standalone
+
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic kafka-demo-standalone --config retention.ms=604800000
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+##Topic Management - Multi
+bin/kafka-topics.sh --create --zookeeper localhost:2182 --replication-factor 1 --partitions 2 --topic kafka-demo-multi --config retention.ms=604800000
+bin/kafka-topics.sh --list --zookeeper localhost:2182
+
+#bin/kafka-topics.sh --create --zookeeper localhost:2182 --replication-factor 2 --partitions 2 --topic kafka-demo-multi --config retention.ms=604800000
+
+
+
+##Cleanup
+rm -rf /tmp/kafka-logs/
+rm -rf /tmp/zookeeper/
+.
+
+
+./bin/kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9092 --describe --group demoConsumerGroup
+
+./bin/kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9093 --describe --group demo-group1
+./bin/kafka-consumer-groups.sh --bootstrap-server 127.0.0.1:9094 --describe --group demo-group2
+
